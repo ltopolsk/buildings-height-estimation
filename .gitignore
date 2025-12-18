@@ -1,0 +1,13 @@
+
+.venv/
+wandb/
+
+*.pth
+
+*.zip
+
+config.json
+
+track2*
+
+__pycache__
