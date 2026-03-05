@@ -13,9 +13,9 @@ from datasets.transforms_sar import get_transforms, get_validation_transforms
 
 from training.losses import MultiTaskLoss
 # from models.unet_sar import MultiTaskNetSar
-# from models.unet_dual_sar import MultiTaskDualUnet
+from models.unet_dual_sar import MultiTaskDualUnet
 # from models.unet import MultiTaskUnet
-from models.unet_sar_only import MultiTaskUnetSarOnly
+# from models.unet_sar_only import MultiTaskUnetSarOnly
 
 # from models.deeplab import MultiTaskDeepLabV3
 # from models.deeplab_sar import MultiTaskDeepLabV3Sar
@@ -32,7 +32,7 @@ def main():
     mdl_config['device'] = "cuda" if torch.cuda.is_available() else "cpu"
     mdl_config['max_height'] = config['max_height']
 
-    model = MultiTaskUnetSarOnly()
+    model = MultiTaskDualUnet()
     model.to(mdl_config['device'])
     
     optimizer = torch.optim.Adam(model.parameters(), lr=mdl_config["lr"])

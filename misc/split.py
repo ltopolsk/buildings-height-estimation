@@ -6,19 +6,25 @@ from pathlib import Path
 # ======================
 # PARAMETRY
 # ======================
-DATASET_DIR = Path("track2/train")
+DATASET_DIR = Path("data/")
 IMAGES_DIR = DATASET_DIR / "rgb"
-ANNOTATIONS_DIR = Path("track2")
+DSM_DIR = DATASET_DIR / "dsm"
+SAR_DIR = DATASET_DIR/ "sar"
+ANNOTATIONS_DIR = Path("track2/annotations")
 
 INPUT_ANN = ANNOTATIONS_DIR / "buildings_only_train.json"
-TRAIN_ANN = ANNOTATIONS_DIR / "instances_train_split.json"
-VAL_ANN = ANNOTATIONS_DIR / "instances_val.json"
+TRAIN_ANN = ANNOTATIONS_DIR / "train.json"
+VAL_ANN = ANNOTATIONS_DIR / "val.json"
 
-TRAIN_IMG_DIR = IMAGES_DIR / "train"
-VAL_IMG_DIR = IMAGES_DIR / "val"
+TRAIN_IMG_DIR = DATASET_DIR / "train" / "rgb"
+TRAIN_SAR_DIR = DATASET_DIR / "train" /"sar" 
+TRAIN_DSM_DIR = DATASET_DIR / "train" / "dsm"
+VAL_IMG_DIR = DATASET_DIR / "val" / "rgb"
+VAL_SAR_DIR = DATASET_DIR / "val" / "sar"
+VAL_DSM_DIR = DATASET_DIR / "val" / "dsm"
 
 VAL_RATIO = 0.2
-RANDOM_SEED = 42
+RANDOM_SEED = 82
 
 # ======================
 # LOAD COCO
@@ -75,17 +81,25 @@ with open(VAL_ANN, "w", encoding="utf-8") as f:
 # COPY IMAGES
 # ======================
 TRAIN_IMG_DIR.mkdir(parents=True, exist_ok=True)
+TRAIN_SAR_DIR.mkdir(parents=True, exist_ok=True)
+TRAIN_DSM_DIR.mkdir(parents=True, exist_ok=True)
 VAL_IMG_DIR.mkdir(parents=True, exist_ok=True)
+VAL_SAR_DIR.mkdir(parents=True, exist_ok=True)
+VAL_DSM_DIR.mkdir(parents=True, exist_ok=True)
 
-def copy_images(image_list, target_dir):
+def copy_images(image_list, source_dir, target_dir):
     for img in image_list:
-        src = IMAGES_DIR / img["file_name"]
+        src = source_dir / img["file_name"]
         dst = target_dir / img["file_name"]
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
 
-copy_images(train_images, TRAIN_IMG_DIR)
-copy_images(val_images, VAL_IMG_DIR)
+copy_images(train_images, IMAGES_DIR,TRAIN_IMG_DIR)
+copy_images(train_images, SAR_DIR,TRAIN_SAR_DIR)
+copy_images(train_images, DSM_DIR,TRAIN_DSM_DIR)
+copy_images(val_images, IMAGES_DIR,VAL_IMG_DIR)
+copy_images(val_images, SAR_DIR, VAL_SAR_DIR)
+copy_images(val_images, DSM_DIR, VAL_DSM_DIR)
 
 print("✅ Podział zakończony")
 print(f"Train: {len(train_images)} obrazów")
