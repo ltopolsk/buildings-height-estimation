@@ -8,6 +8,12 @@ wandb/
 
 config.json
 
-track2*
+track2/*
 
 __pycache__
+
+dataset/*
+.vscode
+saved_models/
+
+work_dirs

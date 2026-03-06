@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 
 # ======================
-# PARAMETRY
+# PARAMS
 # ======================
 DATASET_DIR = Path("data/")
 IMAGES_DIR = DATASET_DIR / "rgb"
@@ -101,6 +101,6 @@ copy_images(val_images, IMAGES_DIR,VAL_IMG_DIR)
 copy_images(val_images, SAR_DIR, VAL_SAR_DIR)
 copy_images(val_images, DSM_DIR, VAL_DSM_DIR)
 
-print("✅ Podział zakończony")
-print(f"Train: {len(train_images)} obrazów")
-print(f"Val:   {len(val_images)} obrazów")
+print("✅ Split finished")
+print(f"Train: {len(train_images)} images")
+print(f"Val:   {len(val_images)} images")
