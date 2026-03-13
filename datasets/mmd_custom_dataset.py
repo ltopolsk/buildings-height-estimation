@@ -36,20 +36,23 @@ class LoadSARAndDSMFromFile(BaseTransform):
         sar_path = results['sar_path']
         sar_img = cv2.imread(sar_path, cv2.IMREAD_UNCHANGED)
         if sar_img is None:
-            raise FileNotFoundError(f"Nie znaleziono pliku SAR: {sar_path}")
-            
-        if len(sar_img.shape) == 2:
-            sar_img = np.expand_dims(sar_img, axis=-1)
-            
-        results['sar_img'] = sar_img
+            raise FileNotFoundError(f"SAR image not found: {sar_path}")
+
+        # SAR normalization 
+        clip_max = 3.5 # estimation based on training dataset
+        sar_img = np.clip(sar_img, 0.0, clip_max)
+        sar_img = (sar_img / clip_max) * 255.0
+        sar_img = sar_img.astype(np.uint8)
 
         dsm_path = results['dsm_path']
         dsm_img = cv2.imread(dsm_path, cv2.IMREAD_UNCHANGED)
         if dsm_img is None:
-            raise FileNotFoundError(f"Nie znaleziono pliku DSM: {dsm_path}")
-            
-        results['gt_height_map'] = dsm_img.astype(np.float32)
-        results['gt_height_map_shape'] = results['gt_height_map'].shape
+            raise FileNotFoundError(f"DSM file not found: {dsm_path}")
+
+        results['sar_img'] = sar_img
+        results['gt_height_map'] = dsm_img
+
+        return results
 
         return results
 
