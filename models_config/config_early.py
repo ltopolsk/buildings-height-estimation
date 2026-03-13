@@ -85,3 +85,20 @@ val_evaluator = dict(type='CocoMetric', ann_file=data_root + 'annotations/val.js
 test_evaluator = val_evaluator
 
 load_from = 'solov2_r50_fpn_4channel_init.pth'
+
+vis_backends = [
+    dict(type='LocalVisBackend'),
+    dict(
+        type='WandbVisBackend', 
+        init_kwargs=dict(
+            project='solov2-seg-and-height', 
+            name='early_fusion_norm'
+        )
+    )
+]
+
+visualizer = dict(
+    type='DetLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer'
+)

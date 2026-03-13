@@ -16,3 +16,20 @@ model = dict(
 )
 
 load_from = 'solov2_r50_fpn_1x_coco_20220512_125858-a357fa23.pth'
+
+vis_backends = [
+    dict(type='LocalVisBackend'),
+    dict(
+        type='WandbVisBackend', 
+        init_kwargs=dict(
+            project='solov2-seg-and-height', 
+            name='decision_fusion_rgb_norm'
+        )
+    )
+]
+
+visualizer = dict(
+    type='DetLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer'
+)
