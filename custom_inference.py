@@ -111,12 +111,12 @@ pred_masks_filtered = masks[valid_inds]
 vis_pred_rgb = img_rgb.copy()
 for m in pred_masks_filtered:
     color = np.random.randint(0, 255, 3).tolist()
-    vis_pred_rgb[m] = vis_pred_rgb[m] * 0.5 + np.array(color) * 0.5
+    vis_pred_rgb[m] = vis_pred_rgb[m] * 0.5 + np.array(color) * 0.5 # pyright: ignore[reportOperatorIssue]
 
 vis_gt_rgb = img_rgb.copy()
 if gt_mask is not None:
     gt_binary = gt_mask > 0 
-    vis_gt_rgb[gt_binary] = vis_gt_rgb[gt_binary] * 0.5 + np.array([0, 255, 0]) * 0.5
+    vis_gt_rgb[gt_binary] = vis_gt_rgb[gt_binary] * 0.5 + np.array([0, 255, 0]) * 0.5 # pyright: ignore[reportOperatorIssue]
 
 fig, axs = plt.subplots(2, 2, figsize=(16, 12))
 

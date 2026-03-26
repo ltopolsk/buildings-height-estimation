@@ -7,8 +7,8 @@ from pycocotools.coco import COCO
 from mmdet.apis import init_detector
 from mmengine.dataset import Compose, pseudo_collate
 
-config_file = 'models_config/config_late_sar.py'
-checkpoint_file = 'runs/late_fusion_sar/epoch_12.pth'
+config_file = 'models_config/config_late_rgb.py'
+checkpoint_file = 'runs/late_fusion_rgb/epoch_50.pth'
 coco_json_path = 'dataset/annotations/val.json'
 
 base_dir = 'dataset/val' 
@@ -61,7 +61,7 @@ for img_id, img_info in tqdm(coco.imgs.items(), desc="Inferencja"):
     gt_height = cv2.imread(dsm_path, cv2.IMREAD_UNCHANGED)
     
     if pred_height is not None and gt_height is not None:
-        valid_mask = gt_height > 0
+        valid_mask = gt_height > 0 # pyright: ignore[reportOperatorIssue]
         p = pred_height[valid_mask]
         g = gt_height[valid_mask]
         

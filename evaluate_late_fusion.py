@@ -8,10 +8,10 @@ from mmdet.apis import init_detector
 from mmengine.dataset import Compose, pseudo_collate
 
 config_rgb = 'models_config/config_late_rgb.py'
-checkpoint_rgb = 'runs/late_fusion_rgb/epoch_12.pth'
+checkpoint_rgb = 'runs/late_fusion_rgb/epoch_50.pth'
 
 config_sar = 'models_config/config_late_sar.py'
-checkpoint_sar = 'runs/late_fusion_sar/epoch_12.pth'
+checkpoint_sar = 'runs/late_fusion_sar/epoch_37.pth'
 
 coco_json_path = 'dataset/annotations/val.json'
 base_dir = 'dataset/val' 
