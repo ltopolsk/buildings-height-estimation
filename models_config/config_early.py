@@ -85,3 +85,34 @@ val_evaluator = dict(type='CocoMetric', ann_file=data_root + 'annotations/val.js
 test_evaluator = val_evaluator
 
 load_from = 'solov2_r50_fpn_4channel_init.pth'
+
+vis_backends = [
+    dict(type='LocalVisBackend'),
+    dict(
+        type='WandbVisBackend', 
+        init_kwargs=dict(
+            project='solov2-seg-and-height', 
+            name='early_fusion_norm'
+        )
+    )
+]
+
+visualizer = dict(
+    type='DetLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer'
+)
+
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=50, val_interval=1)
+
+param_scheduler = [
+    dict(
+        type='LinearLR', start_factor=0.001, by_epoch=False, begin=0, end=500),
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=24,
+        by_epoch=True,
+        milestones=[16, 22],
+        gamma=0.1)
+]

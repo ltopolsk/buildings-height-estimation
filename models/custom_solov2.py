@@ -45,6 +45,31 @@ class CustomSOLOV2Head(SOLOV2Head):
         losses['loss_height'] = loss_h * self.height_loss_weight
 
         return losses
+    
+    def predict(self, x, batch_data_samples, rescale=False, **kwargs):
+        results_list = super().predict(x, batch_data_samples, rescale=rescale, **kwargs)
+
+        p2_features = x[0]
+        height_preds = self.height_branch(p2_features) # [Batch, 1, H_feat, W_feat]
+
+        for i, (pred_instances, data_sample) in enumerate(zip(results_list, batch_data_samples)):
+            single_height_map = height_preds[i:i+1] 
+            
+            if rescale and 'ori_shape' in data_sample:
+                target_shape = data_sample.ori_shape
+            else:
+                target_shape = data_sample.img_shape
+                
+            single_height_map_resized = F.interpolate(
+                single_height_map, 
+                size=target_shape, 
+                mode='bilinear', 
+                align_corners=False
+            )
+            
+            data_sample.set_field(single_height_map_resized[0], 'pred_height_map')
+
+        return results_list
 
 @MODELS.register_module()
 class CustomMultiModalDataPreprocessor(DetDataPreprocessor):
@@ -108,11 +133,6 @@ class DualResNetFeatureFusion(BaseModule):
 
 @MODELS.register_module()
 class LateFusionDataPreprocessor(DetDataPreprocessor):
-    """
-    Preprocesor dla Fuzji Decyzyjnej.
-    Przyjmuje 4-kanałowy tensor z rurociągu, ale tuż przed normalizacją 
-    odcina wybrane kanały, karmiąc sieć tylko optyką lub tylko radarem.
-    """
     def __init__(self, custom_mean, custom_std, keep_channels, **kwargs):
         kwargs.pop('mean', None)
         kwargs.pop('std', None)
@@ -123,16 +143,13 @@ class LateFusionDataPreprocessor(DetDataPreprocessor):
         self.register_buffer('custom_std', torch.tensor(custom_std).view(-1, 1, 1), False)
 
     def forward(self, data: dict, training: bool = False) -> dict | list:
-        # 1. Brutalne odcięcie niepotrzebnych kanałów przed paddingiem
         if isinstance(data['inputs'], list):
             data['inputs'] = [img[self.keep_channels, :, :] for img in data['inputs']]
         elif isinstance(data['inputs'], torch.Tensor):
             data['inputs'] = data['inputs'][:, self.keep_channels, :, :]
             
-        # 2. Bazowy padding (do podzielności przez 32)
         data = super().forward(data, training)
         
-        # 3. Ręczna normalizacja tylko na zostawionych kanałach
         inputs = data['inputs']
         inputs = (inputs - self.custom_mean) / self.custom_std
         data['inputs'] = inputs

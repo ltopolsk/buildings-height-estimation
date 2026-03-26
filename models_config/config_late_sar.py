@@ -16,3 +16,20 @@ model = dict(
 )
 
 load_from = 'solov2_sar_only_init.pth'
+
+vis_backends = [
+    dict(type='LocalVisBackend'),
+    dict(
+        type='WandbVisBackend', 
+        init_kwargs=dict(
+            project='solov2-seg-and-height', 
+            name='late_fusion_sar_norm'
+        )
+    )
+]
+
+visualizer = dict(
+    type='DetLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer'
+)

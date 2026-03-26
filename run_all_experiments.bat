@@ -37,7 +37,7 @@ echo [SUCCESS] RGB model trained.
 :: ---------------------------------------------------------
 :: LATE FUSION (SAR)
 :: ---------------------------------------------------------
-echo [4/4] RUNNING: DECISION FUSION (Tylko SAR)...
+echo [4/4] RUNNING: DECISION FUSION (SAR)...
 mim train mmdet models_config/config_late_sar.py --work-dir runs/late_fusion_sar
 if %errorlevel% neq 0 echo [ERROR] SAR model training stopped!
 echo [SUCCESS] SAR model trained.
